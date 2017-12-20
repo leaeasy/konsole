@@ -3,7 +3,7 @@
 #pkgname=konsole-blurry
 pkgname=konsole
 _pkgname=konsole
-pkgver=17.08.3
+pkgver=17.12.0
 pkgrel=1
 arch=('i686' 'x86_64')
 url='http://kde.org/applications/system/konsole/'
@@ -19,7 +19,8 @@ replaces=('kdebase-konsole')
 conflicts=('kdebase-konsole<4.14.3-2')
 source=("http://download.kde.org/stable/applications/${pkgver}/src/konsole-${pkgver}.tar.xz" 
         "0001-add-blur-effect-when-set-transparency.patch"
-        "0001-add-rainbows-support.patch")
+        "0002-add-rainbows-support.patch"
+        "0003-fix-qttab-default-style.patch")
 sha1sums=('861a9de49d3612b80aeac2c44adeb71bebe31236'
           'b3f8b444181e8e6f60d15d160375c26804429e9b'
           '59fcc82f32eb81c18a2e44860e307f34acfe8237')
@@ -28,7 +29,8 @@ prepare() {
   mkdir -p build
   cd ${srcdir}/$_pkgname-$pkgver
   patch -Np1 -i ${srcdir}/0001-add-blur-effect-when-set-transparency.patch
-  patch -Np1 -i ${srcdir}/0001-add-rainbows-support.patch
+  patch -Np1 -i ${srcdir}/0002-add-rainbows-support.patch
+  patch -Np1 -i ${srcdir}/0003-fix-qttab-default-style.patch
 }
 
 build() {
