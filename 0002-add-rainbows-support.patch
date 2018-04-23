@@ -1,24 +1,24 @@
-From 6e5d094ea1ad5903aa777229743b67f000b66d54 Mon Sep 17 00:00:00 2001
+From aac1ca5fcb30a27f785a3a0156dfc8bbbfefb040 Mon Sep 17 00:00:00 2001
 From: leaeasy <leaeasy@gmail.com>
-Date: Sat, 9 Dec 2017 01:24:01 +0800
-Subject: [PATCH] add rainbows support
+Date: Mon, 23 Apr 2018 10:38:41 +0800
+Subject: [PATCH 2/3] add rainbows support
 
 ---
  src/EditProfileDialog.cpp |  9 +++++++++
  src/EditProfileDialog.h   |  1 +
- src/EditProfileDialog.ui  |  9 ++++++++-
+ src/EditProfileDialog.ui  |  7 +++++++
  src/Profile.cpp           |  2 ++
  src/Profile.h             |  7 +++++++
  src/TerminalDisplay.cpp   | 13 +++++++++++++
  src/TerminalDisplay.h     | 15 +++++++++++++++
  src/ViewManager.cpp       |  1 +
- 8 files changed, 56 insertions(+), 1 deletion(-)
+ 8 files changed, 55 insertions(+)
 
 diff --git a/src/EditProfileDialog.cpp b/src/EditProfileDialog.cpp
-index f8200c2..d4917db 100644
+index 9548d64..081a80a 100644
 --- a/src/EditProfileDialog.cpp
 +++ b/src/EditProfileDialog.cpp
-@@ -511,6 +511,9 @@ void EditProfileDialog::setupAppearancePage(const Profile::Ptr profile)
+@@ -611,6 +611,9 @@ void EditProfileDialog::setupAppearancePage(const Profile::Ptr profile)
      connect(_ui->useFontLineCharactersButton, &QCheckBox::toggled, this,
              &Konsole::EditProfileDialog::useFontLineCharacters);
  
@@ -28,7 +28,7 @@ index f8200c2..d4917db 100644
      _ui->enableMouseWheelZoomButton->setChecked(profile->mouseWheelZoomEnabled());
      connect(_ui->enableMouseWheelZoomButton, &QCheckBox::toggled, this,
              &Konsole::EditProfileDialog::toggleMouseWheelZoom);
-@@ -548,6 +551,12 @@ void EditProfileDialog::useFontLineCharacters(bool enable)
+@@ -648,6 +651,12 @@ void EditProfileDialog::useFontLineCharacters(bool enable)
      updateTempProfileProperty(Profile::UseFontLineCharacters, enable);
  }
  
@@ -42,10 +42,10 @@ index f8200c2..d4917db 100644
  {
      updateTempProfileProperty(Profile::MouseWheelZoomEnabled, enable);
 diff --git a/src/EditProfileDialog.h b/src/EditProfileDialog.h
-index 1b575eb..ec7c12d 100644
+index cfc4cbd..ca64ae3 100644
 --- a/src/EditProfileDialog.h
 +++ b/src/EditProfileDialog.h
-@@ -124,6 +124,7 @@ private Q_SLOTS:
+@@ -128,6 +128,7 @@ private Q_SLOTS:
      void showAllFontsButtonWarning(bool enable);
      void setAntialiasText(bool enable);
      void setBoldIntense(bool enable);
@@ -54,19 +54,10 @@ index 1b575eb..ec7c12d 100644
      void showFontDialog();
      void newColorScheme();
 diff --git a/src/EditProfileDialog.ui b/src/EditProfileDialog.ui
-index 228704f..64b454c 100644
+index 60dec9b..f73a76e 100644
 --- a/src/EditProfileDialog.ui
 +++ b/src/EditProfileDialog.ui
-@@ -7,7 +7,7 @@
-     <x>0</x>
-     <y>0</y>
-     <width>594</width>
--    <height>551</height>
-+    <height>562</height>
-    </rect>
-   </property>
-   <layout class="QHBoxLayout">
-@@ -623,6 +623,13 @@
+@@ -673,6 +673,13 @@
              </property>
             </widget>
            </item>
@@ -81,7 +72,7 @@ index 228704f..64b454c 100644
          </widget>
         </item>
 diff --git a/src/Profile.cpp b/src/Profile.cpp
-index 1224147..af5130a 100644
+index d51a84c..ec2a674 100644
 --- a/src/Profile.cpp
 +++ b/src/Profile.cpp
 @@ -81,6 +81,7 @@ const Profile::PropertyInfo Profile::DefaultPropertyNames[] = {
@@ -92,7 +83,7 @@ index 1224147..af5130a 100644
      , { LineSpacing , "LineSpacing" , APPEARANCE_GROUP , QVariant::Int }
  
      // Keyboard
-@@ -206,6 +207,7 @@ void Profile::useFallback()
+@@ -211,6 +212,7 @@ void Profile::useFallback()
      setProperty(AntiAliasFonts, true);
      setProperty(BoldIntense, true);
      setProperty(UseFontLineCharacters, false);
@@ -101,10 +92,10 @@ index 1224147..af5130a 100644
      setProperty(WordCharacters, QStringLiteral(":@-./_~?&=%+#"));
  
 diff --git a/src/Profile.h b/src/Profile.h
-index c9cf69d..523a87f 100644
+index 8b89342..f8c16a9 100644
 --- a/src/Profile.h
 +++ b/src/Profile.h
-@@ -260,6 +260,8 @@ public:
+@@ -270,6 +270,8 @@ public:
           */
          MouseWheelZoomEnabled,
          /** (int) Keyboard modifiers to show URL hints */
@@ -113,7 +104,7 @@ index c9cf69d..523a87f 100644
          UrlHintsModifiers
      };
  
-@@ -528,6 +530,11 @@ public:
+@@ -538,6 +540,11 @@ public:
          return property<bool>(Profile::BoldIntense);
      }
  
@@ -126,7 +117,7 @@ index c9cf69d..523a87f 100644
      bool useFontLineCharacters() const
      {
 diff --git a/src/TerminalDisplay.cpp b/src/TerminalDisplay.cpp
-index 7b083a6..be8a56b 100644
+index ec48ffb..3620d10 100644
 --- a/src/TerminalDisplay.cpp
 +++ b/src/TerminalDisplay.cpp
 @@ -21,6 +21,7 @@
@@ -137,7 +128,7 @@ index 7b083a6..be8a56b 100644
  #include "TerminalDisplay.h"
  
  // Config
-@@ -333,6 +334,7 @@ TerminalDisplay::TerminalDisplay(QWidget* parent)
+@@ -358,6 +359,7 @@ TerminalDisplay::TerminalDisplay(QWidget* parent)
      , _fontWidth(1)
      , _fontAscent(1)
      , _boldIntense(true)
@@ -145,7 +136,7 @@ index 7b083a6..be8a56b 100644
      , _lines(1)
      , _columns(1)
      , _usedLines(1)
-@@ -1518,6 +1520,7 @@ void TerminalDisplay::drawContents(QPainter& paint, const QRect& rect)
+@@ -1615,6 +1617,7 @@ void TerminalDisplay::drawContents(QPainter& paint, const QRect& rect)
              const RenditionFlags currentRendition = _image[loc(x, y)].rendition;
  
              while (x + len <= rlx &&
@@ -153,7 +144,7 @@ index 7b083a6..be8a56b 100644
                      _image[loc(x + len, y)].foregroundColor == currentForeground &&
                      _image[loc(x + len, y)].backgroundColor == currentBackground &&
                      (_image[loc(x + len, y)].rendition & ~RE_EXTENDED_CHAR) == (currentRendition & ~RE_EXTENDED_CHAR) &&
-@@ -1585,6 +1588,16 @@ void TerminalDisplay::drawContents(QPainter& paint, const QRect& rect)
+@@ -1688,6 +1691,16 @@ void TerminalDisplay::drawContents(QPainter& paint, const QRect& rect)
              //(instead of textArea.topLeft() * painter-scale)
              textArea.moveTopLeft(textScale.inverted().map(textArea.topLeft()));
  
@@ -171,10 +162,10 @@ index 7b083a6..be8a56b 100644
              if (_printerFriendly) {
                  drawPrinterFriendlyTextFragment(paint,
 diff --git a/src/TerminalDisplay.h b/src/TerminalDisplay.h
-index a0244f0..65efbf1 100644
+index f6da500..940177a 100644
 --- a/src/TerminalDisplay.h
 +++ b/src/TerminalDisplay.h
-@@ -431,6 +431,20 @@ public:
+@@ -449,6 +449,20 @@ public:
          return _boldIntense;
      }
  
@@ -195,7 +186,7 @@ index a0244f0..65efbf1 100644
      /**
       * Specifies whether line characters will be displayed using font instead
       * of builtin code.
-@@ -854,6 +868,7 @@ private:
+@@ -900,6 +914,7 @@ private:
      int _fontWidth;      // width
      int _fontAscent;      // ascend
      bool _boldIntense;   // Whether intense colors should be rendered with bold font
@@ -204,10 +195,10 @@ index a0244f0..65efbf1 100644
      int _leftMargin;    // offset
      int _topMargin;    // offset
 diff --git a/src/ViewManager.cpp b/src/ViewManager.cpp
-index 4922299..e440e4a 100644
+index dd97650..dc89b5c 100644
 --- a/src/ViewManager.cpp
 +++ b/src/ViewManager.cpp
-@@ -875,6 +875,7 @@ void ViewManager::applyProfileToView(TerminalDisplay *view, const Profile::Ptr p
+@@ -890,6 +890,7 @@ void ViewManager::applyProfileToView(TerminalDisplay *view, const Profile::Ptr p
      view->setAntialias(profile->antiAliasFonts());
      view->setBoldIntense(profile->boldIntense());
      view->setUseFontLineCharacters(profile->useFontLineCharacters());
@@ -216,5 +207,5 @@ index 4922299..e440e4a 100644
  
      // set scroll-bar position
 -- 
-2.15.1
+2.17.0
 
